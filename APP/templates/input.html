@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict Tags For Your Questions</title>
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+    <div class="container">
+    <h1>Predict Tags For Your Questions</h1>
+    <form action="inputForm" method="post">
+        
+        <input type="text" id="inputString" name="inputString" placeholder="Enter your question">
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Last Input = {{inpu}}</h2>
+
+    <h2>Output = {{Output}}</h2>
+    
+</div>
+
+
+</body>
+</html>
