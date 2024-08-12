@@ -1,9 +1,18 @@
+import io
+import pickle
 
 from flask import Flask,request,render_template
 import pickle
 import nltk
 from nltk.corpus import stopwords
-from nltk.corpus import stopwords
+
+import numpy as np
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Request
+
+from pydantic import BaseModel
 stop_words = set(stopwords.words('english'))
 
 def remove_stopwords(text):
@@ -11,29 +20,24 @@ def remove_stopwords(text):
     return ' '.join(no_stopword_text)
 
 
-
-
-app=Flask(__name__)
-app.static_folder = 'templates'
-
 model = pickle.load(open('classifier.pkl','rb'))
 vecto = pickle.load(open('vect.pkl','rb'))
 binarizer = pickle.load(open('multibin.pkl','rb'))
 
+app = FastAPI()
+
+app.add_middleware(CORSMiddleware, 
+               allow_origins=['*'], 
+               allow_credentials=True, 
+               allow_methods=['*'], 
+               allow_headers=['*'])
 
 
-@app.route ('/')
-def home():
-    return render_template('input.html')
-
-@app.route ('/inputForm',methods = ['GET','POST'])
-
-
-
-def pred () :
-
+@app.post('/predict')
+async def pred (req: Request):
+    data = await req.json()
+    input = data['question']
     try:
-        input = request.form.get('inputString')
         op = remove_stopwords(input)
         op_vec = vecto.transform([op])
         pred_prob = model.predict(op_vec)
@@ -41,13 +45,8 @@ def pred () :
         t = 0.3
         predp = (pred_prob >= t).astype(int)
         ans = binarizer.inverse_transform(predp)
-        return render_template('input.html' , inpu = input ,Output = ans)
+        print(ans)
+        return {"input": input, "Output": ans[0]}
         
     except:
-        return render_template('input.html' , Output = "Invalid Input")
-
-
-
-if __name__ == '__main__':
-    
-    app.run()
+        return {"Output": "Invalid Input"}

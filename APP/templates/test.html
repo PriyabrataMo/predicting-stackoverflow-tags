@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicting Stack Overflow Tags</title>
+</head>
+<body>
+    <input type="text" id="question" placeholder="Enter your question here">
+    <button onclick="sendtext()" id="predict">Predict</button>
+    <p id="result"></p>
+
+    <script type="text/javascript">
+        async function sendtext() {
+            var question = document.getElementById("question").value;
+            console.log(question);
+            try {
+                const response = await fetch("http://localhost:8000/predict", {
+                    method: "POST",
+                    body: JSON.stringify({question})
+                });
+                const data = await response.json();
+                const tags = data["Output"];
+                const result = document.getElementById("result");
+                result.innerHTML = "";
+                tags.map((tag) => {
+                    const h1 = document.createElement("h1");
+                    h1.textContent = tag;
+                    result.appendChild(h1);
+                    console.log(tag);
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("result").innerHTML = "An error occurred";
+            }
+           
+        }
+    </script>
+
+</body>
+</html>
