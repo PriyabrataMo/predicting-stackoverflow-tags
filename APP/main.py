@@ -4,6 +4,7 @@ import pickle
 from flask import Flask,request,render_template
 import pickle
 import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 import numpy as np
