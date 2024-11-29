@@ -33,6 +33,9 @@ app.add_middleware(CORSMiddleware,
                allow_methods=['*'], 
                allow_headers=['*'])
 
+@app.get('/health')
+async def health():
+    return {"status": "Server is up and running"}
 
 @app.post('/predict')
 async def pred (req: Request):
